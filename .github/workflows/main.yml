@@ -1,9 +1,5 @@
 name: my-pipeline
 
-defaults:
-  run:
-    working-directory: ./blog-fullstack
-
 on:
   pull_request:
     branches:
@@ -12,6 +8,10 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: /home/runner/work/blog-fullstack/blog-fullstack/backend
     
     steps:
       - name: Set up Node.js
@@ -31,6 +31,10 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: /home/runner/work/blog-fullstack/blog-fullstack/frontend
 
     steps:
       - name: Set up Node.js
