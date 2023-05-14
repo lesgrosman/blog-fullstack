@@ -1,0 +1,33 @@
+name: lint
+
+on: pull_request
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+      - name: Installing packages
+        run: cd frontend && yarn --frozen-lockfile
+
+      - name: EsLint
+        run: cd frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
+
+      - name: TS
+        run: cd frontend && yarn run tsc --noemit
+
+      - name: Installing packages
+        run: cd backend && yarn --frozen-lockfile
+
+      - name: TS
+        run: cd backend && yarn run tsc --noemit
