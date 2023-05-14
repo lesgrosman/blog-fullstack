@@ -15,13 +15,15 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: cd $GITHUB_WORKSPACE/backend && npm install
+        run: |
+          ls $GITHUB_WORKSPACE
+          cd backend && npm install
 
       - name: TS
-        run: cd $GITHUB_WORKSPACE/backend && yarn run tsc --noemit
+        run: cd backend && yarn run tsc --noemit
 
       - name: Build
-        run: cd $GITHUB_WORKSPACE/backend && yarn run build
+        run: cd backend && yarn run build
       
 
   build-frontend:
@@ -33,13 +35,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: cd $GITHUB_WORKSPACE/frontend && yarn install
+        run: cd frontend && yarn install
 
       - name: EsLint
-        run: cd $GITHUB_WORKSPACE/frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
+        run: cd frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
 
       - name: TS
-        run: cd $GITHUB_WORKSPACE/frontend && yarn run tsc --noemit
+        run: cd frontend && yarn run tsc --noemit
 
       - name: Build
-        run: cd $GITHUB_WORKSPACE/frontend && yarn build
+        run: cd frontend && yarn build
