@@ -8,6 +8,10 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./blog-fullstack/backend
+    
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -15,19 +19,21 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: |
-          ls $GITHUB_WORKSPACE
-          cd backend && npm install
+        run: yarn run install
 
       - name: TS
-        run: cd backend && yarn run tsc --noemit
+        run: yarn run tsc --noemit
 
       - name: Build
-        run: cd backend && yarn run build
+        run: yarn run build
       
 
   build-frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./blog-fullstack/frontend
+
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -35,13 +41,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: cd frontend && yarn install
+        run: yarn run install
 
       - name: EsLint
-        run: cd frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
+        run: yarn run eslint . --ext .js,.jsx,.ts,.tsx
 
       - name: TS
-        run: cd frontend && yarn run tsc --noemit
+        run: yarn run tsc --noemit
 
       - name: Build
-        run: cd frontend && yarn build
+        run: yarn build
