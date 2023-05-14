@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:fe": "cd frontend && yarn dev"
+    "dev:fe": "cd frontend && yarn dev",
+    "dev:be": "cd backend && yarn start:dev "
   },
   "keywords": [],
   "author": "",
