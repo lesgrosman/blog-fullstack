@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: cd backend && yarn run install
+        run: cd backend && yarn install
 
       - name: TS
         run: cd backend && yarn run tsc --noemit
@@ -41,7 +41,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: cd frontend && yarn run install
+        run: cd frontend && yarn install
 
       - name: EsLint
         run: cd frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
