@@ -8,48 +8,46 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: /home/runner/work/blog-fullstack/blog-fullstack/backend
     
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn run install
+        run: cd backend && yarn run install
 
       - name: TS
-        run: yarn run tsc --noemit
+        run: cd backend && yarn run tsc --noemit
 
       - name: Build
-        run: yarn run build
+        run: cd backend && yarn run build
       
 
   build-frontend:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: /home/runner/work/blog-fullstack/blog-fullstack/frontend
-
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn run install
+        run: cd frontend && yarn run install
 
       - name: EsLint
-        run: yarn run eslint . --ext .js,.jsx,.ts,.tsx
+        run: cd frontend && yarn run eslint . --ext .js,.jsx,.ts,.tsx
 
       - name: TS
-        run: yarn run tsc --noemit
+        run: cd frontend && yarn run tsc --noemit
 
       - name: Build
-        run: yarn build
+        run: cd frontend && yarn build
