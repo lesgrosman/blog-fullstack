@@ -2,14 +2,21 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { SignupInput } from './auth.types';
 import * as bcrypt from 'bcrypt';
+import { LoginInput, SignupInput } from './auth.types';
+import { User } from '@prisma/client';
+import { JwtDto } from './jwt.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private jwtService: JwtService,
+  ) {}
   async signup(signupInput: SignupInput): Promise<boolean> {
     const { username, password, firstName, lastName } = signupInput;
 
@@ -40,5 +47,33 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  async login(
+    loginInput: LoginInput,
+  ): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+    const { username, password } = loginInput;
+
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const payload: JwtDto = { username, id: user.id };
+      const accessToken = await this.jwtService.sign(payload);
+      const refreshToken = await this.jwtService.sign(payload, {
+        expiresIn: '7d',
+      });
+
+      return {
+        user,
+        accessToken,
+        refreshToken,
+      };
+    } else {
+      throw new UnauthorizedException('Please check auth credentials');
+    }
   }
 }

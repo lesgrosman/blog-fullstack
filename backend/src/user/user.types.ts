@@ -1,6 +1,8 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { User } from '@prisma/client';
+import { User as Userdb } from '@prisma/client';
 import { PostGqlType } from 'src/posts/posts.types';
+
+export type User = Omit<Userdb, 'password'>;
 
 @ObjectType('User')
 export class UserGqlType implements User {
@@ -15,9 +17,6 @@ export class UserGqlType implements User {
 
   @Field(() => String)
   lastName: string;
-
-  @Field(() => String)
-  password: string;
 
   @Field(() => [PostGqlType])
   posts: PostGqlType[];
