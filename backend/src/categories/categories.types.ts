@@ -1,9 +1,11 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Category } from '@prisma/client';
+import { Category as CategoryDb } from '@prisma/client';
 import { PostGqlType } from 'src/posts/posts.types';
 
+export type Category = Omit<CategoryDb, 'createdAt' | 'updatedAt'>;
+
 @ObjectType('Category')
-export class CategoryGqlType implements Category {
+export class CategoryGqlType implements CategoryDb {
   @Field(() => ID)
   id: string;
 

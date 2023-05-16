@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Post } from '@prisma/client';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private dbService: DatabaseService) {}
   async getAllPosts(): Promise<Post[]> {
-    return this.prismaService.post.findMany();
+    return this.dbService.findAllPosts();
   }
 
   async getPostById(id: string): Promise<Post> {
-    return this.prismaService.post.findUnique({
-      where: {
-        id,
-      },
-    });
+    return this.dbService.findPostById(id);
   }
 }
