@@ -1,6 +1,6 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import { Post } from '@prisma/client';
-import { CategoryGqlType } from 'src/categories/categories.types';
+import { Category, CategoryGqlType } from 'src/categories/categories.types';
 import { CommentGqlType } from 'src/comments/comments.types';
 import { UserGqlType } from 'src/user/user.types';
 
@@ -38,4 +38,26 @@ export class PostGqlType implements Post {
 
   @Field(() => String)
   updatedAt: Date;
+}
+
+export type PostInput = {
+  title: string;
+  perex: string;
+  content: string;
+  category: Category;
+};
+
+@InputType('PostInput')
+export class CreatePostInputGqlType implements Partial<Post> {
+  @Field(() => String)
+  title: string;
+
+  @Field(() => String)
+  perex: string;
+
+  @Field(() => String)
+  content: string;
+
+  @Field(() => [CategoryGqlType])
+  category: Category[];
 }
