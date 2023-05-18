@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import { Category as CategoryDb } from '@prisma/client';
 import { PostGqlType } from 'src/posts/posts.types';
 
@@ -23,4 +23,17 @@ export class CategoryGqlType implements CategoryDb {
 
   @Field(() => String)
   updatedAt: Date;
+}
+
+// Field for creating post
+@InputType('CategoryInput')
+export class CategoryInputGqlType implements Partial<CategoryDb> {
+  @Field(() => String)
+  id: string;
+
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String)
+  slug: string;
 }
