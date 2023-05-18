@@ -1,6 +1,10 @@
 import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import { Post } from '@prisma/client';
-import { Category, CategoryGqlType } from 'src/categories/categories.types';
+import {
+  Category,
+  CategoryGqlType,
+  CategoryInputGqlType,
+} from 'src/categories/categories.types';
 import { CommentGqlType } from 'src/comments/comments.types';
 import { UserGqlType } from 'src/user/user.types';
 
@@ -44,11 +48,11 @@ export type PostInput = {
   title: string;
   perex: string;
   content: string;
-  category: Category;
+  categories: Category[];
 };
 
 @InputType('PostInput')
-export class CreatePostInputGqlType implements Partial<Post> {
+export class PostInputGqlType implements Partial<Post> {
   @Field(() => String)
   title: string;
 
@@ -58,6 +62,6 @@ export class CreatePostInputGqlType implements Partial<Post> {
   @Field(() => String)
   content: string;
 
-  @Field(() => [CategoryGqlType])
-  category: Category[];
+  @Field(() => [CategoryInputGqlType])
+  categories: CategoryInputGqlType[];
 }
