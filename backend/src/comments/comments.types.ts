@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import { Comment } from '@prisma/client';
 import { LikeGqlType } from 'src/likes/likes.types';
 import { PostGqlType } from 'src/posts/posts.types';
@@ -32,4 +32,10 @@ export class CommentGqlType implements Comment {
 
   @Field(() => String)
   updatedAt: Date;
+}
+
+@InputType('CommentInput')
+export class CommentInputGqlType implements Partial<Comment> {
+  @Field(() => String)
+  content: string;
 }

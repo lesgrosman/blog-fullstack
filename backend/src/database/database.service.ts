@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Comment, Post } from '@prisma/client';
+import { CommentInputGqlType } from 'src/comments/comments.types';
 import { PostInputGqlType } from 'src/posts/posts.types';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -11,7 +12,6 @@ export class DatabaseService {
     const posts = await this.prisma.post.findMany({
       include: {
         categories: true,
-        comments: true,
         author: true,
       },
     });
@@ -25,7 +25,6 @@ export class DatabaseService {
       },
       include: {
         categories: true,
-        comments: true,
         author: true,
       },
     });
@@ -150,13 +149,90 @@ export class DatabaseService {
   }
 
   // comments
+  async findComment(id: string): Promise<Comment> {
+    const comment = await this.prisma.comment.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return comment;
+  }
+
   async findComments(postId: string): Promise<Comment[]> {
     const comments = await this.prisma.comment.findMany({
       where: {
         postId,
       },
+      include: {
+        likes: true,
+        author: true,
+      },
     });
 
     return comments;
+  }
+
+  async createComment(
+    postId: string,
+    userId: string,
+    input: CommentInputGqlType,
+  ): Promise<Comment> {
+    const { content } = input;
+
+    const comment = await this.prisma.comment.create({
+      data: {
+        content,
+        author: {
+          connect: {
+            id: userId,
+          },
+        },
+        post: {
+          connect: {
+            id: postId,
+          },
+        },
+      },
+    });
+
+    return comment;
+  }
+
+  async updateComment(
+    id: string,
+    input: CommentInputGqlType,
+  ): Promise<Comment> {
+    const { content } = input;
+
+    const comment = await this.prisma.comment.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+      },
+    });
+
+    return comment;
+  }
+
+  async deleteComment(id: string): Promise<string> {
+    const deleteLikes = this.prisma.like.deleteMany({
+      where: {
+        commentId: id,
+      },
+    });
+
+    const deleteComment = this.prisma.comment.delete({
+      where: { id },
+    });
+
+    const transaction = await this.prisma.$transaction([
+      deleteLikes,
+      deleteComment,
+    ]);
+
+    return transaction[1].id;
   }
 }
