@@ -34,9 +34,9 @@ export class PostsResolver {
   @Mutation(() => PostGqlType)
   @UseGuards(GqlAuthGuard)
   async updatePost(
+    @Args({ name: 'id', type: () => String }) postId: string,
     @Args({ name: 'input', type: () => PostInputGqlType })
     input: PostInputGqlType,
-    @Args({ name: 'id', type: () => String }) postId: string,
     @GetUser() user: JwtDto,
   ): Promise<Post> {
     return this.postsService.updatePost(user.id, postId, input);
