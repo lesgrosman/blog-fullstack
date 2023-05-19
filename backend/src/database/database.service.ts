@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Comment, Post } from '@prisma/client';
+import { Comment, Like, Post } from '@prisma/client';
 import { CommentInputGqlType } from 'src/comments/comments.types';
 import { PostInputGqlType } from 'src/posts/posts.types';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -149,10 +149,13 @@ export class DatabaseService {
   }
 
   // comments
-  async findComment(id: string): Promise<Comment> {
+  async findComment(id: string): Promise<Comment & { likes: Like[] }> {
     const comment = await this.prisma.comment.findUnique({
       where: {
         id,
+      },
+      include: {
+        likes: true,
       },
     });
 
@@ -234,5 +237,33 @@ export class DatabaseService {
     ]);
 
     return transaction[1].id;
+  }
+
+  // likes
+  async likeComment(commentId: string, userId: string): Promise<Like> {
+    const like = await this.prisma.like.create({
+      data: {
+        author: {
+          connect: {
+            id: userId,
+          },
+        },
+        comment: {
+          connect: {
+            id: commentId,
+          },
+        },
+      },
+    });
+    return like;
+  }
+
+  async unlikeComment(commentId: string, userId: string): Promise<Like> {
+    const unlike = await this.prisma.like.delete({
+      where: {
+        authorId_commentId: { authorId: userId, commentId: commentId },
+      },
+    });
+    return unlike;
   }
 }
