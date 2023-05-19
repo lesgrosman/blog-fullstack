@@ -6,6 +6,7 @@ import { CommentsModule } from './comments/comments.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DatabaseModule } from './database/database.module';
     UserModule,
     AuthModule,
     DatabaseModule,
+    LikesModule,
   ],
 })
 export class AppModule {}
