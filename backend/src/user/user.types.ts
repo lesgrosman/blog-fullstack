@@ -1,6 +1,5 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { User as Userdb } from '@prisma/client';
-import { PostGqlType } from 'src/posts/posts.types';
 
 export type User = Omit<Userdb, 'password'>;
 
@@ -17,9 +16,6 @@ export class UserGqlType implements User {
 
   @Field(() => String)
   lastName: string;
-
-  @Field(() => [PostGqlType])
-  posts: PostGqlType[];
 
   @Field(() => String)
   createdAt: Date;
