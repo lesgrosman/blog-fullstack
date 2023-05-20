@@ -55,6 +55,29 @@ export class AuthResolver {
     };
   }
 
+  @Mutation(() => LoginResponseGqlType)
+  async refresh(
+    @ResGql() res: Response,
+    @ReqGql() req: Request,
+  ): Promise<LoginResponse> {
+    const token = cookieExtractor(req);
+
+    const { accessToken, refreshToken, user } =
+      await this.authService.refreshToken(token);
+
+    res.cookie(refreshTokenCookieName, refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+
+    return {
+      user,
+      token: {
+        accessToken,
+      },
+    };
+  }
+
   @Mutation(() => Boolean)
   async logout(
     @ResGql() res: Response,

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -74,6 +75,38 @@ export class AuthService {
       };
     } else {
       throw new UnauthorizedException('Please check auth credentials');
+    }
+  }
+
+  async refreshToken(
+    token: string,
+  ): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+    try {
+      const { id, username } = await this.jwtService.verify(token);
+
+      if (!id || !username) {
+        throw new BadRequestException('Bad request');
+      }
+
+      const payload: JwtDto = { id, username };
+      const accessToken = await this.jwtService.sign(payload);
+      const refreshToken = await this.jwtService.sign(payload, {
+        expiresIn: '7d',
+      });
+
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        user,
+        accessToken,
+        refreshToken,
+      };
+    } catch (e) {
+      throw new BadRequestException('Bad request');
     }
   }
 }
