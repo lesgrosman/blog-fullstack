@@ -12,8 +12,14 @@ export class PostsResolver {
   constructor(private postsService: PostsService) {}
 
   @Query(() => [PostGqlType])
-  async posts() {
+  async posts(): Promise<Post[]> {
     return await this.postsService.getAllPosts();
+  }
+
+  @Query(() => [PostGqlType])
+  @UseGuards(GqlAuthGuard)
+  async myPosts(@GetUser() user: JwtDto): Promise<Post[]> {
+    return await this.postsService.getMyPosts(user);
   }
 
   @Query(() => PostGqlType)

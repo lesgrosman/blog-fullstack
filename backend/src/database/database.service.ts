@@ -18,6 +18,16 @@ export class DatabaseService {
     return posts;
   }
 
+  async findMyPosts(userId: string): Promise<Post[]> {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        authorId: userId,
+      },
+    });
+
+    return posts;
+  }
+
   async findPostById(id: string): Promise<Post> {
     const post = await this.prisma.post.findUnique({
       where: {
