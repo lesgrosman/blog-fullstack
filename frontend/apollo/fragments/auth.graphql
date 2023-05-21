@@ -1,0 +1,10 @@
+fragment AuthToken on Token {
+  accessToken
+}
+
+fragment AuthUser on User {
+  id
+  username
+  firstName
+  lastName
+}
