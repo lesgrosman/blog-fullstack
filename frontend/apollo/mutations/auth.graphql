@@ -1,0 +1,14 @@
+mutation Login (
+  $loginInput: LoginInput!
+) {
+  login (
+    loginInput: $loginInput
+  ) {
+    token {
+      ...AuthToken
+    }
+    user {
+      ...AuthUser
+    }
+  }
+}
